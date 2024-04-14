@@ -14,11 +14,12 @@ class MinimalSubscriberClientAction(Node):
     def __init__(self):
         super().__init__('minimal_subscriber_client_action')
         self.subscription = self.create_subscription(Uid,'University_ID',self.listener_callback,10) #subscribing uid with customized interface
-        self.cli = self.create_client(Multiply, 'multiply')
+        self.cli = self.create_client(Multiply, 'multiply')                                         #service client
         while not self.cli.wait_for_service(timeout_sec=1.0):
             self.get_logger().info('service not available, waiting again...')
         self.req = Multiply.Request()
-        self._action_client = ActionClient(self, AddDigits, 'add_digits')
+        self._action_client = ActionClient(self, AddDigits, 'add_digits')                           #action client
+        self.declare_parameter('my_uid', '2020741046')                                              #parameter
         #self.subscription
 
     def listener_callback(self, msg):
@@ -31,9 +32,19 @@ class MinimalSubscriberClientAction(Node):
         rclpy.spin_until_future_complete(self, self.future)
         return self.future.result()
     
-    def send_goal(self, uid):
-        goal_msg = AddDigits.Goal()
-        goal_msg.uid = uid
+    def send_goal(self):
+        my_param = self.get_parameter('my_uid').get_parameter_value().string_value      #set parameters
+        
+        my_new_param = rclpy.parameter.Parameter(
+            'my_uid',
+            rclpy.Parameter.Type.STRING,
+            '2020741046'
+        )
+        all_new_parameters = [my_new_param]
+        self.set_parameters(all_new_parameters)
+
+        goal_msg = AddDigits.Goal()                                                     #set action goals
+        goal_msg.uid = my_param
 
         self._action_client.wait_for_server()
 
@@ -71,7 +82,7 @@ def main(args=None):
         'Result of multipy: %d * %d = %d' %
         (int(sys.argv[1]), int(sys.argv[2]), response.product))
     
-    minimal_subscriber_client_action.send_goal('2020741046')
+    minimal_subscriber_client_action.send_goal()
 
     rclpy.spin(minimal_subscriber_client_action)
 
