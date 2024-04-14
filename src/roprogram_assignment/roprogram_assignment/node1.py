@@ -17,7 +17,7 @@ class MinimalPublisherServiceAction(Node):
         self.publisher = self.create_publisher(Uid, 'University_ID', 10)                        #publishing uid with customized interface
         self.srv = self.create_service(Multiply, 'multiply', self.multiply_callback)            #service server
         self.action_server = ActionServer(self, AddDigits, 'add_digits', self.execute_callback) #action server
-        self.declare_parameter('my_uid', '2020741046')                                                    #parameter
+        self.declare_parameter('my_uid', '2020741046')                                          #parameter
         
         timer_period = 0.5  #seconds
         self.timer = self.create_timer(timer_period, self.timer_callback)
