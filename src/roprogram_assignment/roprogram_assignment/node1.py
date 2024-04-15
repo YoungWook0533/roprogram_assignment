@@ -3,8 +3,6 @@ import rclpy
 from rclpy.node import Node
 from rclpy.action import ActionServer
 
-from std_msgs.msg import String
-
 from multiplier_interfaces.srv import Multiply
 from multiplier_interfaces.msg import Uid
 from multiplier_interfaces.action import AddDigits
@@ -59,7 +57,7 @@ class MinimalPublisherServiceAction(Node):
         for digit in feedback_msg.partial_sequence:
             tmp_sum += digit
             feedback_msg.partial_sequence[0] = tmp_sum  #save added results in first element of partial_sequence(to show both recieved uid and added result)
-            self.get_logger().info('Feedback: {0}'.format(feedback_msg.partial_sequence))
+            self.get_logger().info('Feedback: [First element is partial sum] {0}'.format(feedback_msg.partial_sequence))
             goal_handle.publish_feedback(feedback_msg)
             time.sleep(1)
 
