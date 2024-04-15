@@ -3,8 +3,6 @@ import rclpy
 from rclpy.node import Node
 from rclpy.action import ActionClient
 
-from std_msgs.msg import String
-
 from multiplier_interfaces.srv import Multiply
 from multiplier_interfaces.msg import Uid
 from multiplier_interfaces.action import AddDigits
@@ -20,7 +18,6 @@ class MinimalSubscriberClientAction(Node):
         self.req = Multiply.Request()
         self._action_client = ActionClient(self, AddDigits, 'add_digits')                           #action client
         self.declare_parameter('my_uid', '2020741046')                                              #parameter
-        #self.subscription
 
     def listener_callback(self, msg):
         self.get_logger().info('Recieved: "%s"' % msg.uid)
@@ -55,7 +52,7 @@ class MinimalSubscriberClientAction(Node):
     def goal_response_callback(self, future):
         goal_handle = future.result()
         if not goal_handle.accepted:
-            self.get_logger().info('Goal rejected :()')
+            self.get_logger().info('Goal rejected :(')
             return
         
         self.get_logger().info('Goal accepted :)')
@@ -69,7 +66,7 @@ class MinimalSubscriberClientAction(Node):
     
     def feedback_callback(self, feedback_msg):
         feedback = feedback_msg.feedback
-        self.get_logger().info('Received feedback: {0}'.format(feedback.partial_sequence))
+        self.get_logger().info('Received feedback: [First element is partial sum] {0}'.format(feedback.partial_sequence))
            
 
 
